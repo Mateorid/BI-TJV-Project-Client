@@ -13,6 +13,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.shell:spring-shell-starter:2.0.1.RELEASE'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-hateoas'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

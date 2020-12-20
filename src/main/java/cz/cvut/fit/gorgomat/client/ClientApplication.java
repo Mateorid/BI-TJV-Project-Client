@@ -8,6 +8,7 @@ import org.springframework.boot.web.client.RestTemplateCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.hateoas.config.HypermediaRestTemplateConfigurer;
+import org.springframework.shell.standard.ShellMethod;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
@@ -24,5 +25,4 @@ public class ClientApplication {
     RestTemplateCustomizer customizer(HypermediaRestTemplateConfigurer c) {
         return c::registerHypermediaTypes;
     }
-
 }

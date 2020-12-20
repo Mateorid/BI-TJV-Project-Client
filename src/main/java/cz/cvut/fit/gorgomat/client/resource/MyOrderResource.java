@@ -1,5 +1,6 @@
 package cz.cvut.fit.gorgomat.client.resource;
 
+import cz.cvut.fit.gorgomat.client.model.MyOrderCreateDTO;
 import cz.cvut.fit.gorgomat.client.model.MyOrderModel;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.ParameterizedTypeReference;
@@ -19,18 +20,18 @@ public class MyOrderResource {
         restTemplate = builder.rootUri("http://localhost:8080/api/v1/myOrders").build();
     }
 
-    private static final String PAGED_URI = "?page={page}&size={size}";
+    private static final String PAGED_URI = "/?page={page}&size={size}";
     private static final String ONE_URI = "/{id}";
 
-    public URI create(MyOrderModel data) {
-        return restTemplate.postForLocation("", data);
+    public URI create(MyOrderCreateDTO data) {
+        return restTemplate.postForLocation("/", data);
     }
 
     public MyOrderModel readOne(String id) {
         return restTemplate.getForObject(ONE_URI, MyOrderModel.class, id);
     }
 
-    public PagedModel<MyOrderModel> readByCustomerName(String name, int page, int size) { //todo funguje? xd
+    public PagedModel<MyOrderModel> readByCustomerName(String name, int page, int size) {
         ResponseEntity<PagedModel<MyOrderModel>> response = restTemplate.exchange(
                 PAGED_URI + "&customerName=" + name, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PagedModel<MyOrderModel>>() {
@@ -40,7 +41,7 @@ public class MyOrderResource {
         return response.getBody();
     }
 
-    public PagedModel<MyOrderModel> readByCustomerId(String id, int page, int size) { //todo funguje? xd
+    public PagedModel<MyOrderModel> readByCustomerId(String id, int page, int size) {
         ResponseEntity<PagedModel<MyOrderModel>> response = restTemplate.exchange(
                 PAGED_URI + "&customerId=" + id, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PagedModel<MyOrderModel>>() {

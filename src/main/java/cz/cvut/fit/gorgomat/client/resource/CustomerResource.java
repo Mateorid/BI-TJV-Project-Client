@@ -1,5 +1,6 @@
 package cz.cvut.fit.gorgomat.client.resource;
 
+import cz.cvut.fit.gorgomat.client.model.CustomerCreateDTO;
 import cz.cvut.fit.gorgomat.client.model.CustomerModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -20,11 +21,11 @@ public class CustomerResource {
         restTemplate = builder.rootUri("http://localhost:8080/api/v1/customers").build();
     }
 
-    private static final String PAGED_URI = "?page={page}&size={size}";
+    private static final String PAGED_URI = "/?page={page}&size={size}";
     private static final String ONE_URI = "/{id}";
 
-    public URI create(CustomerModel data) {
-        return restTemplate.postForLocation("", data);
+    public URI create(CustomerCreateDTO data) {
+        return restTemplate.postForLocation("/", data);
     }
 
     public CustomerModel readOne(String id) {
@@ -41,7 +42,7 @@ public class CustomerResource {
         return response.getBody();
     }
 
-    public PagedModel<CustomerModel> readWithEmailContaining(String email, int page, int size) { //todo funguje? xd
+    public PagedModel<CustomerModel> readWithEmailContaining(String email, int page, int size) {
         ResponseEntity<PagedModel<CustomerModel>> response = restTemplate.exchange(
                 PAGED_URI + "&email=" + email, HttpMethod.GET, null,
                 new ParameterizedTypeReference<PagedModel<CustomerModel>>() {
