@@ -7,15 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.table.*;
 import org.springframework.web.client.HttpClientErrorException;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @ShellComponent
 public class EquipmentCommands {
     @Autowired
     private EquipmentResource equipmentResource;
 
+    public String[] HEADER_ROW = {"ID", "Type", "Size", "Available"};
 
     @ShellMethod(value = "Create equipment", key = "eqC")
     public void eqCreate(Integer size, String type, int av) {
@@ -41,6 +45,27 @@ public class EquipmentCommands {
         for (EquipmentModel e : collection) {
             System.out.printf("ID: %s Type: %s Size: %s Available: %s \n", e.getId(), e.getType(), e.getSize(), e.isAvailable());
         }
+    }
+
+    @ShellMethod(value = "Makes a table from all the Equipment", key = "eqT")
+    public void eqTable() {
+        PagedModel<EquipmentModel> model = equipmentResource.readAll(0, 200000);
+        Collection<EquipmentModel> collection = model.getContent();
+        String[][] data = new String[collection.size() + 2][4];
+        data[0] = HEADER_ROW;
+        data[1] = new String[]{"=====", "====================", "=========", "==========="};
+        int i = 2;
+        for (EquipmentModel e : collection) {
+            data[i][0] = e.getId().toString();
+            data[i][1] = e.getType();
+            data[i][2] = e.getSize().toString();
+            data[i][3] = e.isAvailable().toString();
+            i++;
+        }
+        TableModel tableModel = new ArrayTableModel(data);
+        TableBuilder tableBuilder = new TableBuilder(tableModel);
+        tableBuilder.addOutlineBorder(BorderStyle.fancy_double);
+        System.out.printf("%s", tableBuilder.build().render(2000));
     }
 
     @ShellMethod(value = "Read equipment by availability", key = "eqAv")

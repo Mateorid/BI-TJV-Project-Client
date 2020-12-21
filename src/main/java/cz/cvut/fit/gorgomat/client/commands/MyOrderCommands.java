@@ -1,5 +1,6 @@
 package cz.cvut.fit.gorgomat.client.commands;
 
+import cz.cvut.fit.gorgomat.client.model.CustomerModel;
 import cz.cvut.fit.gorgomat.client.model.MyOrderCreateDTO;
 import cz.cvut.fit.gorgomat.client.model.MyOrderModel;
 import cz.cvut.fit.gorgomat.client.resource.MyOrderResource;
@@ -7,6 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
+import org.springframework.shell.table.ArrayTableModel;
+import org.springframework.shell.table.BorderStyle;
+import org.springframework.shell.table.TableBuilder;
+import org.springframework.shell.table.TableModel;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.sql.Date;
@@ -16,6 +21,8 @@ import java.util.*;
 public class MyOrderCommands {
     @Autowired
     private MyOrderResource myOrderResource;
+
+    public String[] HEADER_ROW = {"ID", "From", "To", "Customer ID", "Equipment"};
 
 
     @ShellMethod(value = "Create myOrder", key = "orC")
@@ -64,6 +71,28 @@ public class MyOrderCommands {
         for (MyOrderModel e : collection) {
             System.out.printf("ID: %s\n", e.getId());
         }
+    }
+
+    @ShellMethod(value = "Makes a table from all orders from given customer", key = "orT")
+    public void orTable(String name) {
+        PagedModel<MyOrderModel> model = myOrderResource.readByCustomerName(name, 0, 200000);
+        Collection<MyOrderModel> collection = model.getContent();
+        String[][] data = new String[collection.size() + 2][5];
+        data[0] = HEADER_ROW;
+        data[1] = new String[]{"=====", "====================", "====================", "====================", "========================="};
+        int i = 2;
+        for (MyOrderModel e : collection) {
+            data[i][0] = e.getId().toString();
+            data[i][1] = e.getDateFrom().toString();
+            data[i][2] = e.getDateTo().toString();
+            data[i][3] = e.getCustomerId().toString();
+            data[i][4] = e.getEquipmentIds().toString();
+            i++;
+        }
+        TableModel tableModel = new ArrayTableModel(data);
+        TableBuilder tableBuilder = new TableBuilder(tableModel);
+        tableBuilder.addOutlineBorder(BorderStyle.fancy_double);
+        System.out.printf("%s", tableBuilder.build().render(2000));
     }
 
     @ShellMethod(value = "Read myOrder by customer ID", key = "orTS")
