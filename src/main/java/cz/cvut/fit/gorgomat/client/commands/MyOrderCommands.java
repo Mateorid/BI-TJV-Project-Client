@@ -37,8 +37,8 @@ public class MyOrderCommands {
             Date f = new Date(from);
             Date t = new Date(to);
             MyOrderCreateDTO or = new MyOrderCreateDTO(f, t, cID, eIDs);
-            myOrderResource.create(or);
-            System.out.println("Success");
+//            myOrderResource.create(or);
+            System.out.println("Success\nCreated at:" + myOrderResource.create(or));
         } catch (HttpClientErrorException e) {
             System.out.println("400");
         } catch (Exception e) {

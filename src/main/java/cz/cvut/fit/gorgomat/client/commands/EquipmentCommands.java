@@ -22,10 +22,10 @@ public class EquipmentCommands {
     public String[] HEADER_ROW = {"ID", "Type", "Size", "Available"};
 
     @ShellMethod(value = "Create equipment", key = "eqC")
-    public void eqCreate(Integer size, String type, int av) {
+    public void eqCreate(String type, Integer size, int av) {
         EquipmentCreateDTO eq = new EquipmentCreateDTO(size, type, av != 0);
-        equipmentResource.create(eq);
-        System.out.println("Success");
+//        equipmentResource.create(eq);
+        System.out.println("Success\nCreated at:"+ equipmentResource.create(eq));
     }
 
     @ShellMethod(value = "Read one equipment by ID", key = "eqID")

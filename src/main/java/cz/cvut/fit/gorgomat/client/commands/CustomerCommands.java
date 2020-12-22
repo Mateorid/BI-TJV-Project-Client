@@ -26,8 +26,8 @@ public class CustomerCommands {
     @ShellMethod(value = "Create customer", key = "csC")
     public void csCreate(String name, String email) {
         CustomerCreateDTO cs = new CustomerCreateDTO(name, email);
-        customerResource.create(cs);
-        System.out.println("Success");
+//        customerResource.create(cs);
+        System.out.println("Success\nCreated at:" + customerResource.create(cs));
     }
 
     @ShellMethod(value = "Read one customer by ID", key = "csID")
